@@ -122,7 +122,11 @@ final class ArticleControllerTest extends TestCase
     #[Test]
     public function destroy_deletes_and_responds_with(): void
     {
+        $user = User::factory()->create();
+        
         $article = Article::factory()->create();
+
+        $this->actingAs($user);
 
         $response = $this->delete(route('articles.destroy', $article));
 

@@ -5,6 +5,7 @@ namespace App\Application\Article;
 use App\Application\Article\DTOs\ArticleData;
 use App\Domain\Article\SlugGenerator;
 use App\Domain\Exceptions\InactiveUserException;
+use App\Domain\Exceptions\InvalidUserException;
 use App\Models\Article;
 use App\Models\User;
 
@@ -13,6 +14,10 @@ final class UpdateArticle
     public function __invoke(Article $article, ArticleData $data): Article
     {
         $author = User::findOrFail($data->authorId);
+
+        if ($author->id !== $article->author_id && $article->author->role !== 'admin') {
+            throw InvalidUserException::cannotPerformAction($author->id);
+        }
 
         if (! $author->active) {
             throw InactiveUserException::cannotPerformAction($author->id);
