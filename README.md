@@ -1,11 +1,11 @@
-# Laravel API - Setup Rústico
+# Laravel API - Challenge: API de Gestión de Contenido para un CMS Modular
 
-Proyecto backend construido para velocidad y eficiencia usando:
+API RESTful en PHP para un sistema CMS modular que permita la gestión de artículos, categorías y usuarios.
 
 - **Laravel 12**: Framework base.
-- **JWT Auth**: Autenticación segura (php-open-source-saver/jwt-auth).
+- **JWT Auth**: Autenticación JWT (php-open-source-saver/jwt-auth).
 - **Blueprint**: Generación acelerada de código y estructuras.
-- **Pest**: Testing elegante y simple.
+- **Pest**: Testing simple.
 
 ## Pasos para Levantar el Proyecto
 
