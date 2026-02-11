@@ -31,4 +31,9 @@ class Category extends Model
             'id' => 'integer',
         ];
     }
+
+    public function articles(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Article::class);
+    }
 }

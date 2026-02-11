@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Domain\Article\SlugGenerator;
 
 class Article extends Model
 {
@@ -24,18 +25,6 @@ class Article extends Model
         'author_id',
     ];
 
-     protected static function booted(): void
-    {
-        static::creating(function (Post $post) {
-
-            // si no vino slug manual
-            if (empty($post->slug)) {
-                $post->slug = Str::slug($post->title);
-            }
-
-        });
-    }
-
     /**
      * Get the attributes that should be cast.
      *
@@ -52,6 +41,11 @@ class Article extends Model
 
     public function author(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'author_id');
+    }
+
+    public function categories(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Category::class);
     }
 }

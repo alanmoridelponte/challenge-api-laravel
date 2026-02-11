@@ -2,6 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Application\Article\CreateArticle;
+use App\Application\Article\DeleteArticle;
+use App\Application\Article\DTOs\ArticleData;
+use App\Application\Article\ListArticles;
+use App\Application\Article\UpdateArticle;
 use App\Http\Requests\ArticleStoreRequest;
 use App\Http\Requests\ArticleUpdateRequest;
 use App\Http\Resources\ArticleCollection;
@@ -12,35 +17,51 @@ use Illuminate\Http\Response;
 
 class ArticleController extends Controller
 {
-    public function index(Request $request): Response
+    public function index(ListArticles $listArticles): ArticleCollection
     {
-        $articles = Article::all();
-
-        return new ArticleCollection($articles);
+        return new ArticleCollection($listArticles());
     }
 
-    public function store(ArticleStoreRequest $request): Response
+    public function store(ArticleStoreRequest $request, CreateArticle $createArticle): ArticleResource
     {
-        $article = Article::create($request->validated());
+        $data = new ArticleData(
+            title: $request->title,
+            content: $request->content,
+            status: $request->status,
+            authorId: $request->author_id,
+            publishedAt: $request->published_at,
+            categoryIds: $request->category_ids ?? []
+        );
+
+        $article = $createArticle($data);
 
         return new ArticleResource($article);
     }
 
-    public function show(Request $request, Article $article): Response
+    public function show(Article $article): ArticleResource
     {
+        return new ArticleResource($article->load(['author', 'categories']));
+    }
+
+    public function update(ArticleUpdateRequest $request, Article $article, UpdateArticle $updateArticle): ArticleResource
+    {
+        $data = new ArticleData(
+            title: $request->title,
+            content: $request->content,
+            status: $request->status,
+            authorId: $request->author_id,
+            publishedAt: $request->published_at,
+            categoryIds: $request->category_ids ?? []
+        );
+
+        $article = $updateArticle($article, $data);
+
         return new ArticleResource($article);
     }
 
-    public function update(ArticleUpdateRequest $request, Article $article): Response
+    public function destroy(Article $article, DeleteArticle $deleteArticle): Response
     {
-        $article->update($request->validated());
-
-        return new ArticleResource($article);
-    }
-
-    public function destroy(Request $request, Article $article): Response
-    {
-        $article->delete();
+        $deleteArticle($article);
 
         return response()->noContent();
     }

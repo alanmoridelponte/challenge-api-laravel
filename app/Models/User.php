@@ -43,4 +43,9 @@ class User extends Model
             'active' => 'boolean',
         ];
     }
+
+    public function articles(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Article::class, 'author_id');
+    }
 }
