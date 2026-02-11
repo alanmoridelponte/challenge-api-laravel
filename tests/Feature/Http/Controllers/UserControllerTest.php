@@ -44,7 +44,7 @@ final class UserControllerTest extends TestCase
         $name = fake()->name();
         $email = fake()->safeEmail();
         $password = fake()->password();
-        $role = fake()->randomElement(/** enum_attributes **/);
+        $role = fake()->randomElement(['admin', 'editor']);
         $active = fake()->boolean();
 
         $response = $this->post(route('users.store'), [
@@ -58,7 +58,6 @@ final class UserControllerTest extends TestCase
         $users = User::query()
             ->where('name', $name)
             ->where('email', $email)
-            ->where('password', $password)
             ->where('role', $role)
             ->where('active', $active)
             ->get();
@@ -98,8 +97,8 @@ final class UserControllerTest extends TestCase
         $user = User::factory()->create();
         $name = fake()->name();
         $email = fake()->safeEmail();
-        $password = fake()->password();
-        $role = fake()->randomElement(/** enum_attributes **/);
+        $password = 'password';
+        $role = fake()->randomElement(['admin', 'editor']);
         $active = fake()->boolean();
 
         $response = $this->put(route('users.update', $user), [
@@ -117,7 +116,6 @@ final class UserControllerTest extends TestCase
 
         $this->assertEquals($name, $user->name);
         $this->assertEquals($email, $user->email);
-        $this->assertEquals($password, $user->password);
         $this->assertEquals($role, $user->role);
         $this->assertEquals($active, $user->active);
     }

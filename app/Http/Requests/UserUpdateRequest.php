@@ -22,9 +22,9 @@ class UserUpdateRequest extends FormRequest
         return [
             'name' => ['required', 'string'],
             'email' => ['required', 'email', 'unique:users,email'],
-            'password' => ['required', 'password'],
+            'password' => ['required', 'string', 'min:8'],
             'role' => ['required', 'in:admin,editor'],
-            'active' => ['required'],
+            'active' => ['required', 'boolean'],
         ];
     }
 }

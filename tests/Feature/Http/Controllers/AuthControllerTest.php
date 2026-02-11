@@ -2,6 +2,8 @@
 
 namespace Tests\Feature\Http\Controllers;
 
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use JMac\Testing\Traits\AdditionalAssertions;
 use PHPUnit\Framework\Attributes\Test;
@@ -12,7 +14,7 @@ use Tests\TestCase;
  */
 final class AuthControllerTest extends TestCase
 {
-    use AdditionalAssertions, WithFaker;
+    use AdditionalAssertions, RefreshDatabase, WithFaker;
 
     #[Test]
     public function login_uses_form_request_validation(): void
@@ -27,9 +29,20 @@ final class AuthControllerTest extends TestCase
     #[Test]
     public function login_responds_with(): void
     {
-        $response = $this->get(route('auths.login'));
+        $user = User::factory()->create([
+            'password' => bcrypt('password'),
+        ]);
+
+        $response = $this->post(route('auth.login'), [
+            'email' => $user->email,
+            'password' => 'password',
+        ]);
 
         $response->assertOk();
-        $response->assertJson($token);
+        $response->assertJsonStructure([
+            'message',
+            'user',
+            'token',
+        ]);
     }
 }

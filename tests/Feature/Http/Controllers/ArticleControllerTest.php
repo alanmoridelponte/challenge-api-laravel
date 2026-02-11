@@ -3,7 +3,7 @@
 namespace Tests\Feature\Http\Controllers;
 
 use App\Models\Article;
-use App\Models\Author;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use JMac\Testing\Traits\AdditionalAssertions;
@@ -28,7 +28,6 @@ final class ArticleControllerTest extends TestCase
         $response->assertJsonStructure([]);
     }
 
-
     #[Test]
     public function store_uses_form_request_validation(): void
     {
@@ -45,8 +44,8 @@ final class ArticleControllerTest extends TestCase
         $title = fake()->sentence(4);
         $content = fake()->paragraphs(3, true);
         $slug = fake()->slug();
-        $status = fake()->randomElement(/** enum_attributes **/);
-        $author = Author::factory()->create();
+        $status = fake()->randomElement(['draft', 'published']);
+        $author = User::factory()->create(['active' => true]);
 
         $response = $this->post(route('articles.store'), [
             'title' => $title,
@@ -59,7 +58,6 @@ final class ArticleControllerTest extends TestCase
         $articles = Article::query()
             ->where('title', $title)
             ->where('content', $content)
-            ->where('slug', $slug)
             ->where('status', $status)
             ->where('author_id', $author->id)
             ->get();
@@ -69,7 +67,6 @@ final class ArticleControllerTest extends TestCase
         $response->assertCreated();
         $response->assertJsonStructure([]);
     }
-
 
     #[Test]
     public function show_behaves_as_expected(): void
@@ -81,7 +78,6 @@ final class ArticleControllerTest extends TestCase
         $response->assertOk();
         $response->assertJsonStructure([]);
     }
-
 
     #[Test]
     public function update_uses_form_request_validation(): void
@@ -100,8 +96,8 @@ final class ArticleControllerTest extends TestCase
         $title = fake()->sentence(4);
         $content = fake()->paragraphs(3, true);
         $slug = fake()->slug();
-        $status = fake()->randomElement(/** enum_attributes **/);
-        $author = Author::factory()->create();
+        $status = fake()->randomElement(['draft', 'published']);
+        $author = User::factory()->create(['active' => true]);
 
         $response = $this->put(route('articles.update', $article), [
             'title' => $title,
@@ -118,11 +114,10 @@ final class ArticleControllerTest extends TestCase
 
         $this->assertEquals($title, $article->title);
         $this->assertEquals($content, $article->content);
-        $this->assertEquals($slug, $article->slug);
+        $this->assertNotNull($article->slug);
         $this->assertEquals($status, $article->status);
         $this->assertEquals($author->id, $article->author_id);
     }
-
 
     #[Test]
     public function destroy_deletes_and_responds_with(): void

@@ -42,7 +42,7 @@ final class CategoryControllerTest extends TestCase
     public function store_saves(): void
     {
         $name = fake()->name();
-        $status = fake()->randomElement(/** enum_attributes **/);
+        $status = fake()->randomElement(['active', 'inactive']);
 
         $response = $this->post(route('categories.store'), [
             'name' => $name,
@@ -88,7 +88,7 @@ final class CategoryControllerTest extends TestCase
     {
         $category = Category::factory()->create();
         $name = fake()->name();
-        $status = fake()->randomElement(/** enum_attributes **/);
+        $status = fake()->randomElement(['active', 'inactive']);
 
         $response = $this->put(route('categories.update', $category), [
             'name' => $name,
