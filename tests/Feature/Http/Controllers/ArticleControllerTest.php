@@ -95,7 +95,7 @@ final class ArticleControllerTest extends TestCase
     #[Test]
     public function update_behaves_as_expected(): void
     {
-        $user = User::factory()->create(['active' => true]);
+        $user = User::factory()->create(['active' => true, 'role' => 'admin']);
         $article = Article::factory()->create(['author_id' => $user->id]);
         $title = fake()->sentence(4);
         $content = fake()->paragraphs(3, true);
@@ -126,7 +126,7 @@ final class ArticleControllerTest extends TestCase
     #[Test]
     public function destroy_deletes_and_responds_with(): void
     {
-        $user = User::factory()->create(['active' => true]);
+        $user = User::factory()->create(['active' => true, 'role' => 'admin']);
 
         $article = Article::factory()->create();
 

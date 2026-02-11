@@ -9,7 +9,7 @@ final class SlugGenerator
 {
     public static function generate(string $title): string
     {
-        return Str::slug($title);
+        return Str::slug($title) . '-' . now()->timestamp;
     }
 
     public static function generateUnique(string $title, ?int $excludeId = null): string
