@@ -16,7 +16,7 @@ class ArticleFactory extends Factory
             'title' => fake()->sentence(4),
             'content' => fake()->paragraphs(3, true),
             'slug' => fake()->slug(),
-            'status' => fake()->randomElement(["draft","published"]),
+            'status' => fake()->randomElement(['draft', 'published']),
             'published_at' => fake()->dateTime(),
             'author_id' => User::factory(),
         ];

@@ -20,9 +20,10 @@ final class ArticleControllerTest extends TestCase
     #[Test]
     public function index_behaves_as_expected(): void
     {
+        $user = User::factory()->create();
         $articles = Article::factory()->count(3)->create();
 
-        $response = $this->get(route('articles.index'));
+        $response = $this->actingAs($user, 'api')->get(route('articles.index'));
 
         $response->assertOk();
         $response->assertJsonStructure([]);
@@ -41,13 +42,14 @@ final class ArticleControllerTest extends TestCase
     #[Test]
     public function store_saves(): void
     {
+        $user = User::factory()->create();
         $title = fake()->sentence(4);
         $content = fake()->paragraphs(3, true);
         $slug = fake()->slug();
         $status = fake()->randomElement(['draft', 'published']);
         $author = User::factory()->create(['active' => true]);
 
-        $response = $this->post(route('articles.store'), [
+        $response = $this->actingAs($user, 'api')->post(route('articles.store'), [
             'title' => $title,
             'content' => $content,
             'slug' => $slug,
@@ -71,9 +73,10 @@ final class ArticleControllerTest extends TestCase
     #[Test]
     public function show_behaves_as_expected(): void
     {
+        $user = User::factory()->create();
         $article = Article::factory()->create();
 
-        $response = $this->get(route('articles.show', $article));
+        $response = $this->actingAs($user, 'api')->get(route('articles.show', $article));
 
         $response->assertOk();
         $response->assertJsonStructure([]);
@@ -92,14 +95,15 @@ final class ArticleControllerTest extends TestCase
     #[Test]
     public function update_behaves_as_expected(): void
     {
-        $article = Article::factory()->create();
+        $user = User::factory()->create();
+        $article = Article::factory()->create(['author_id' => $user->id]);
         $title = fake()->sentence(4);
         $content = fake()->paragraphs(3, true);
         $slug = fake()->slug();
         $status = fake()->randomElement(['draft', 'published']);
         $author = User::factory()->create(['active' => true]);
 
-        $response = $this->put(route('articles.update', $article), [
+        $response = $this->actingAs($user, 'api')->put(route('articles.update', $article), [
             'title' => $title,
             'content' => $content,
             'slug' => $slug,
@@ -123,10 +127,10 @@ final class ArticleControllerTest extends TestCase
     public function destroy_deletes_and_responds_with(): void
     {
         $user = User::factory()->create();
-        
+
         $article = Article::factory()->create();
 
-        $this->actingAs($user);
+        $this->actingAs($user, 'api');
 
         $response = $this->delete(route('articles.destroy', $article));
 

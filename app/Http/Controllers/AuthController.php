@@ -3,22 +3,27 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AuthLoginRequest;
-use Illuminate\Http\Response;
 
 class AuthController extends Controller
 {
-    public function login(AuthLoginRequest $request): Response|\Illuminate\Http\JsonResponse
+    public function login(AuthLoginRequest $request): \Illuminate\Http\JsonResponse
     {
-        if (!auth()->attempt($request->only('email', 'password'))) {
-            return response()->json(['message' => 'Credenciales inválidas'], 401);
+        $credentials = $request->validated();
+
+        if (! $token = auth('api')->attempt($credentials)) {
+            return response()->json([
+                'message' => 'Credenciales inválidas',
+            ], 401);
         }
 
-        $user = auth()->user();
-        $token = 'dummy-token';
+        return $this->respondWithToken($token);
+    }
 
-        return response([
-            'message' => 'Login correcto',
-            'user' => $user,
+    protected function respondWithToken($token)
+    {
+        return response()->json([
+            'message' => 'Login exitoso',
+            'user' => auth('api')->user(),
             'token' => $token,
         ]);
     }

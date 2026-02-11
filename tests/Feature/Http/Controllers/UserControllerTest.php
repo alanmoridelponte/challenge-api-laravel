@@ -19,14 +19,14 @@ final class UserControllerTest extends TestCase
     #[Test]
     public function index_behaves_as_expected(): void
     {
+        $user = User::factory()->create();
         $users = User::factory()->count(3)->create();
 
-        $response = $this->get(route('users.index'));
+        $response = $this->actingAs($user, 'api')->get(route('users.index'));
 
         $response->assertOk();
         $response->assertJsonStructure([]);
     }
-
 
     #[Test]
     public function store_uses_form_request_validation(): void
@@ -41,13 +41,14 @@ final class UserControllerTest extends TestCase
     #[Test]
     public function store_saves(): void
     {
+        $authenticatedUser = User::factory()->create();
         $name = fake()->name();
         $email = fake()->safeEmail();
         $password = fake()->password();
         $role = fake()->randomElement(['admin', 'editor']);
         $active = fake()->boolean();
 
-        $response = $this->post(route('users.store'), [
+        $response = $this->actingAs($authenticatedUser, 'api')->post(route('users.store'), [
             'name' => $name,
             'email' => $email,
             'password' => $password,
@@ -68,18 +69,17 @@ final class UserControllerTest extends TestCase
         $response->assertJsonStructure([]);
     }
 
-
     #[Test]
     public function show_behaves_as_expected(): void
     {
+        $authenticatedUser = User::factory()->create();
         $user = User::factory()->create();
 
-        $response = $this->get(route('users.show', $user));
+        $response = $this->actingAs($authenticatedUser, 'api')->get(route('users.show', $user));
 
         $response->assertOk();
         $response->assertJsonStructure([]);
     }
-
 
     #[Test]
     public function update_uses_form_request_validation(): void
@@ -94,6 +94,7 @@ final class UserControllerTest extends TestCase
     #[Test]
     public function update_behaves_as_expected(): void
     {
+        $authenticatedUser = User::factory()->create();
         $user = User::factory()->create();
         $name = fake()->name();
         $email = fake()->safeEmail();
@@ -101,7 +102,7 @@ final class UserControllerTest extends TestCase
         $role = fake()->randomElement(['admin', 'editor']);
         $active = fake()->boolean();
 
-        $response = $this->put(route('users.update', $user), [
+        $response = $this->actingAs($authenticatedUser, 'api')->put(route('users.update', $user), [
             'name' => $name,
             'email' => $email,
             'password' => $password,
@@ -120,13 +121,13 @@ final class UserControllerTest extends TestCase
         $this->assertEquals($active, $user->active);
     }
 
-
     #[Test]
     public function destroy_deletes_and_responds_with(): void
     {
+        $authenticatedUser = User::factory()->create();
         $user = User::factory()->create();
 
-        $response = $this->delete(route('users.destroy', $user));
+        $response = $this->actingAs($authenticatedUser, 'api')->delete(route('users.destroy', $user));
 
         $response->assertNoContent();
 
