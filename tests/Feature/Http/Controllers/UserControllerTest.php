@@ -19,7 +19,7 @@ final class UserControllerTest extends TestCase
     #[Test]
     public function index_behaves_as_expected(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['active' => true]);
         $users = User::factory()->count(3)->create();
 
         $response = $this->actingAs($user, 'api')->get(route('users.index'));
@@ -41,7 +41,7 @@ final class UserControllerTest extends TestCase
     #[Test]
     public function store_saves(): void
     {
-        $authenticatedUser = User::factory()->create();
+        $authenticatedUser = User::factory()->create(['active' => true]);
         $name = fake()->name();
         $email = fake()->safeEmail();
         $password = fake()->password();
@@ -72,7 +72,7 @@ final class UserControllerTest extends TestCase
     #[Test]
     public function show_behaves_as_expected(): void
     {
-        $authenticatedUser = User::factory()->create();
+        $authenticatedUser = User::factory()->create(['active' => true]);
         $user = User::factory()->create();
 
         $response = $this->actingAs($authenticatedUser, 'api')->get(route('users.show', $user));
@@ -94,7 +94,7 @@ final class UserControllerTest extends TestCase
     #[Test]
     public function update_behaves_as_expected(): void
     {
-        $authenticatedUser = User::factory()->create();
+        $authenticatedUser = User::factory()->create(['active' => true]);
         $user = User::factory()->create();
         $name = fake()->name();
         $email = fake()->safeEmail();
@@ -124,7 +124,7 @@ final class UserControllerTest extends TestCase
     #[Test]
     public function destroy_deletes_and_responds_with(): void
     {
-        $authenticatedUser = User::factory()->create();
+        $authenticatedUser = User::factory()->create(['active' => true]);
         $user = User::factory()->create();
 
         $response = $this->actingAs($authenticatedUser, 'api')->delete(route('users.destroy', $user));

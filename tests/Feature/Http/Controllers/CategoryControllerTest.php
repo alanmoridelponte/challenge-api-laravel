@@ -20,7 +20,7 @@ final class CategoryControllerTest extends TestCase
     #[Test]
     public function index_behaves_as_expected(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['active' => true]);
         $categories = Category::factory()->count(3)->create();
 
         $response = $this->actingAs($user, 'api')->get(route('categories.index'));
@@ -42,7 +42,7 @@ final class CategoryControllerTest extends TestCase
     #[Test]
     public function store_saves(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['active' => true]);
         $name = fake()->name();
         $status = fake()->randomElement(['active', 'inactive']);
 
@@ -65,7 +65,7 @@ final class CategoryControllerTest extends TestCase
     #[Test]
     public function show_behaves_as_expected(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['active' => true]);
         $category = Category::factory()->create();
 
         $response = $this->actingAs($user, 'api')->get(route('categories.show', $category));
@@ -87,7 +87,7 @@ final class CategoryControllerTest extends TestCase
     #[Test]
     public function update_behaves_as_expected(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['active' => true]);
         $category = Category::factory()->create();
         $name = fake()->name();
         $status = fake()->randomElement(['active', 'inactive']);
@@ -109,7 +109,7 @@ final class CategoryControllerTest extends TestCase
     #[Test]
     public function destroy_deletes_and_responds_with(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['active' => true]);
         $category = Category::factory()->create();
 
         $response = $this->actingAs($user, 'api')->delete(route('categories.destroy', $category));

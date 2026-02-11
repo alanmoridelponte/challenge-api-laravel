@@ -20,7 +20,7 @@ final class ArticleControllerTest extends TestCase
     #[Test]
     public function index_behaves_as_expected(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['active' => true]);
         $articles = Article::factory()->count(3)->create();
 
         $response = $this->actingAs($user, 'api')->get(route('articles.index'));
@@ -42,7 +42,7 @@ final class ArticleControllerTest extends TestCase
     #[Test]
     public function store_saves(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['active' => true]);
         $title = fake()->sentence(4);
         $content = fake()->paragraphs(3, true);
         $slug = fake()->slug();
@@ -73,7 +73,7 @@ final class ArticleControllerTest extends TestCase
     #[Test]
     public function show_behaves_as_expected(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['active' => true]);
         $article = Article::factory()->create();
 
         $response = $this->actingAs($user, 'api')->get(route('articles.show', $article));
@@ -95,7 +95,7 @@ final class ArticleControllerTest extends TestCase
     #[Test]
     public function update_behaves_as_expected(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['active' => true]);
         $article = Article::factory()->create(['author_id' => $user->id]);
         $title = fake()->sentence(4);
         $content = fake()->paragraphs(3, true);
@@ -108,7 +108,7 @@ final class ArticleControllerTest extends TestCase
             'content' => $content,
             'slug' => $slug,
             'status' => $status,
-            'author_id' => $author->id,
+            'author_id' => $user->id,
         ]);
 
         $article->refresh();
@@ -120,13 +120,13 @@ final class ArticleControllerTest extends TestCase
         $this->assertEquals($content, $article->content);
         $this->assertNotNull($article->slug);
         $this->assertEquals($status, $article->status);
-        $this->assertEquals($author->id, $article->author_id);
+        $this->assertEquals($user->id, $article->author_id);
     }
 
     #[Test]
     public function destroy_deletes_and_responds_with(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['active' => true]);
 
         $article = Article::factory()->create();
 
