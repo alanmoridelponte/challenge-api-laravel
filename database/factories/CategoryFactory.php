@@ -4,7 +4,7 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class UserFactory extends Factory
+class CategoryFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -13,10 +13,8 @@ class UserFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'email' => fake()->safeEmail(),
-            'password' => fake()->password(),
-            'role' => fake()->randomElement(["admin","editor"]),
-            'active' => fake()->boolean(),
+            'description' => fake()->text(),
+            'status' => fake()->randomElement(["active","inactive"]),
         ];
     }
 }
